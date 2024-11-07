@@ -1,9 +1,18 @@
 -- +goose Up
+CREATE TABLE IF NOT EXISTS users(
+    id integer primary key,
+    user_id text unique not null,
+    username text not null,
+    phone text not null,
+    hash_password text not null,
+    role boolean not null,
+    created_at datetime not null,
+    updated_at datetime not null,
+    deleted_at datetime
+);
 -- +goose StatementBegin
-SELECT 'up SQL query';
 -- +goose StatementEnd
-
 -- +goose Down
+DROP TABLE IF EXISTS users;
 -- +goose StatementBegin
-SELECT 'down SQL query';
 -- +goose StatementEnd
