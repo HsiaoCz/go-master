@@ -6,6 +6,11 @@ CREATE TABLE IF NOT EXISTS users(
     phone text not null,
     hash_password text not null,
     role boolean not null,
+    avatar text not null,
+    brief text not null,
+    birthday text not null,
+    background_image text not null,
+    gender text not null,
     created_at datetime not null,
     updated_at datetime not null,
     deleted_at datetime
