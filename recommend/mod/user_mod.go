@@ -28,3 +28,16 @@ func (u *UserMod) CreateUser(ctx context.Context, user *types.Users) (*types.Use
 	}
 	return user, nil
 }
+
+func (u *UserMod) GetUserByID(ctx context.Context, user_id string) (*types.Users, error) {
+	var user types.Users
+	tx := u.db.Debug().Model(&types.Users{}).Where("user_id = ?", user_id).First(&user)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	return &user, nil
+}
+
+func (u *UserMod) GetUserByPhoneAndPassword(ctx context.Context, login *types.Users) error {
+	return nil
+}

@@ -13,3 +13,13 @@ type Books struct {
 	Descriptions string  `gorm:"column:descriptions;" json:"descriptions"`
 	CoverImage   string  `gorm:"column:cover_image;" json:"cover_image"`
 }
+
+type CreateBookParams struct {
+	Auther       string  `json:"auther"`
+	Title        string  `json:"title"`
+	Price        float64 `json:"float64"`
+	Stock        int     `json:"stock"`
+	CatehoryName string  `json:"category_name"`
+	Descriptions string  `json:"descriptions"`
+	CoverImage   string  `json:"cover_image"`
+}

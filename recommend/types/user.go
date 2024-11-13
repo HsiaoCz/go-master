@@ -1,6 +1,7 @@
 package types
 
 import (
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -26,4 +27,19 @@ type CreateUserParams struct {
 	Role     bool   `json:"role"`
 	Birthday string `json:"birthday"`
 	Gender   string `json:"gender"`
+}
+
+func CreateUserFromParams(params CreateUserParams) *Users {
+	return &Users{
+		UserID:          uuid.NewString(),
+		Phone:           params.Phone,
+		Username:        params.Username,
+		Role:            params.Role,
+		Birthday:        params.Birthday,
+		Gender:          params.Gender,
+		Avatar:          "./picture/avatar/1233.jpg",
+		Brief:           "",
+		BackgroundImage: "./picture/background/1344.jpg",
+		Age:             27,
+	}
 }
