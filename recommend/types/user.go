@@ -1,6 +1,7 @@
 package types
 
 import (
+	"github.com/HsiaoCz/go-master/recommend/pkg"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -37,9 +38,9 @@ func CreateUserFromParams(params CreateUserParams) *Users {
 		Role:            params.Role,
 		Birthday:        params.Birthday,
 		Gender:          params.Gender,
-		Avatar:          "./picture/avatar/1233.jpg",
+		Avatar:          pkg.GetPicture("ATR"),
 		Brief:           "",
-		BackgroundImage: "./picture/background/1344.jpg",
-		Age:             27,
+		BackgroundImage: pkg.GetPicture("BGI"),
+		HashPassword:    pkg.EncryPassword(params.Password),
 	}
 }

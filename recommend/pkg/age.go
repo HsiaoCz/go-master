@@ -2,6 +2,8 @@ package pkg
 
 import "time"
 
+// should use "2006-01-02"
+// like this type
 func GetAge(birthday string) (int, error) {
 	birthDate, err := time.Parse("2006-01-02", birthday)
 	if err != nil {
