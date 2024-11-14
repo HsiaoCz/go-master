@@ -3,6 +3,7 @@ package mod
 import (
 	"context"
 
+	"github.com/HsiaoCz/go-master/recommend/pkg"
 	"github.com/HsiaoCz/go-master/recommend/types"
 	"gorm.io/gorm"
 )
@@ -38,6 +39,11 @@ func (u *UserMod) GetUserByID(ctx context.Context, user_id string) (*types.Users
 	return &user, nil
 }
 
-func (u *UserMod) GetUserByPhoneAndPassword(ctx context.Context, login *types.Users) error {
+func (u *UserMod) GetUserByPhoneAndPassword(ctx context.Context, login *types.Login) error {
+	var user types.Users
+	tx := u.db.Debug().Model(&types.Users{}).Where("phone = ? AND hash_password = ?", login.Phone, pkg.EncryPassword(login.Password)).First(&user)
+	if tx.Error != nil {
+		return tx.Error
+	}
 	return nil
 }

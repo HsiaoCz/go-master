@@ -1,8 +1,21 @@
 package handlers
 
-type BookHandlers struct{}
+import (
+	"net/http"
 
+	"github.com/HsiaoCz/go-master/recommend/mod"
+)
 
-func BookHandlersInit()*BookHandlers{
-	return &BookHandlers{}
+type BookHandlers struct {
+	book mod.BookModInter
+}
+
+func BookHandlersInit(book mod.BookModInter) *BookHandlers {
+	return &BookHandlers{
+		book: book,
+	}
+}
+
+func (b *BookHandlers) HandleCreateBook(w http.ResponseWriter, r *http.Request) error {
+	return nil
 }
