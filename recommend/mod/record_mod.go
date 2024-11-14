@@ -9,3 +9,4 @@ import (
 type RecordModInter interface {
 	CreateRecord(context.Context, *types.Records) (*types.Records, error)
 }
+

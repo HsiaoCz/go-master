@@ -32,7 +32,7 @@ type CreateUserParams struct {
 
 func CreateUserFromParams(params CreateUserParams) *Users {
 	return &Users{
-		UserID:          uuid.NewString(),
+		UserID:          uuid.New().String(),
 		Phone:           params.Phone,
 		Username:        params.Username,
 		Role:            params.Role,
@@ -43,4 +43,9 @@ func CreateUserFromParams(params CreateUserParams) *Users {
 		BackgroundImage: pkg.GetPicture("BGI"),
 		HashPassword:    pkg.EncryPassword(params.Password),
 	}
+}
+
+type Login struct {
+	Phone    string `json:"phone"`
+	Password string `json:"password"`
 }

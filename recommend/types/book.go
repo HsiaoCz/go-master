@@ -1,6 +1,9 @@
 package types
 
-import "gorm.io/gorm"
+import (
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
 
 type Books struct {
 	gorm.Model
@@ -22,4 +25,17 @@ type CreateBookParams struct {
 	CatehoryName string  `json:"category_name"`
 	Descriptions string  `json:"descriptions"`
 	CoverImage   string  `json:"cover_image"`
+}
+
+func CreateBookFromParams(params CreateBookParams) *Books {
+	return &Books{
+		Auther:       params.Auther,
+		Title:        params.Title,
+		Price:        params.Price,
+		Stock:        params.Stock,
+		CategoryName: params.CatehoryName,
+		Descriptions: params.Descriptions,
+		CoverImage:   params.CoverImage,
+		BookID:       uuid.New().String(),
+	}
 }
