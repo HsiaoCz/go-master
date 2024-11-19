@@ -58,6 +58,7 @@ func main() {
 	{
 		// user handlefunc
 		router.HandleFunc("POST /api/v1/user", handlers.TransferHandlerfunc(userHandlers.HandleCreateUser))
+		router.HandleFunc("GET /api/v1/user/{user_id}", handlers.TransferHandlerfunc(userHandlers.HandleCreateUser))
 	}
 
 	server := http.Server{

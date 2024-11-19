@@ -25,3 +25,8 @@ func (u *UserHandlers) HandleCreateUser(w http.ResponseWriter, r *http.Request) 
 	}
 	return nil
 }
+
+func (u *UserHandlers) HandleGetUserByID(w http.ResponseWriter, r *http.Request) error {
+	user_id := r.PathValue("user_id")
+	return WriteJson(w, http.StatusOK, user_id)
+}
