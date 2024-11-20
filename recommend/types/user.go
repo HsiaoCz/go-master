@@ -49,3 +49,12 @@ type Login struct {
 	Phone    string `json:"phone"`
 	Password string `json:"password"`
 }
+
+type UserUpdateParams struct {
+	Username        string `json:"username"`
+	Brief           string `json:"brief"`
+	Birthday        string `json:"birthday"`
+	Gender          string `json:"gender"`
+	Avatar          string `json:"avatar"`
+	BackgroundImage string `json:"background_image"`
+}
