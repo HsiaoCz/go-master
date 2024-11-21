@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -19,20 +20,34 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+func init() {
+	// set log
+	logrus.SetLevel(logrus.DebugLevel)
+	logrus.SetFormatter(&logrus.TextFormatter{FullTimestamp: true})
+}
+
 func main() {
 	// init env
 	if err := godotenv.Load(); err != nil {
 		log.Fatal(err)
 	}
 
-	// set log
-	logrus.SetLevel(logrus.DebugLevel)
-	logrus.SetFormatter(&logrus.TextFormatter{FullTimestamp: true})
-
 	// init db
 	if err := db.Init(); err != nil {
 		log.Fatal(err)
 	}
+	// init redis
+
+	go func() {
+		count, err := strconv.Atoi(os.Getenv("DBCOUNT"))
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"error message": err,
+			}).Error("dbcount must be int")
+			os.Exit(1)
+		}
+		db.InitRedis(os.Getenv("REDISURL"), os.Getenv("PASSWD"), count)
+	}()
 
 	// connect mongo db
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
