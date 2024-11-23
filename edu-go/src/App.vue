@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import { ElMessage } from 'element-plus';
+
+const handleClick = () => {
+  ElMessage.success("let's go success!")
+}
 </script>
 
 <template>
+  <el-button type="primary" @click="handleClick">Let's go</el-button>
   <header>
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
