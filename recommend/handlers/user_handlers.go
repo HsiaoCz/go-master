@@ -19,18 +19,30 @@ func UserHandlersInit(mod *mod.UserMod) *UserHandlers {
 }
 
 func (u *UserHandlers) HandleCreateUser(w http.ResponseWriter, r *http.Request) error {
-	var create_user_params types.Users
+	var create_user_params types.CreateUserParams
 	if err := json.NewDecoder(r.Body).Decode(&create_user_params); err != nil {
 		return ErrorMessage(http.StatusBadRequest, err.Error())
 	}
-	return nil
+	user, err := u.mod.CreateUser(r.Context(), types.CreateUserFromParams(create_user_params))
+	if err != nil {
+		return ErrorMessage(http.StatusInternalServerError, err.Error())
+	}
+	return WriteJson(w, http.StatusOK, map[string]any{
+		"status":  http.StatusOK,
+		"message": "create user success",
+		"user":    user,
+	})
 }
 
 func (u *UserHandlers) HandleGetUserByID(w http.ResponseWriter, r *http.Request) error {
 	user_id := r.PathValue("user_id")
-	return WriteJson(w, http.StatusOK, user_id)
+	user, err := u.mod.GetUserByID(r.Context(), user_id)
+	if err != nil {
+		return ErrorMessage(http.StatusBadRequest, err.Error())
+	}
+	return WriteJson(w, http.StatusOK, user)
 }
 
-func (u *UserHandlers)HandleDeleteUserByID(w http.ResponseWriter, r *http.Request)error{
+func (u *UserHandlers) HandleDeleteUserByID(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }

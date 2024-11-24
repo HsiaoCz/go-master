@@ -9,6 +9,7 @@ import (
 
 type BookModInter interface {
 	CreateBook(context.Context, *types.Books) (*types.Books, error)
+	GetBookByAuther(context.Context, string) ([]*types.Books, error)
 }
 
 type BookMod struct {
@@ -27,4 +28,8 @@ func (b *BookMod) CreateBook(ctx context.Context, book *types.Books) (*types.Boo
 		return nil, tx.Error
 	}
 	return book, nil
+}
+
+func (b *BookMod) GetBookByAuther(ctx context.Context, auther_name string) ([]*types.Books, error) {
+	return nil, nil
 }

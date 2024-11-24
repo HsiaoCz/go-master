@@ -42,8 +42,11 @@ func (u *UserMod) GetUserByID(ctx context.Context, user_id string) (*types.Users
 func (u *UserMod) GetUserByPhoneAndPassword(ctx context.Context, login *types.Login) error {
 	var user types.Users
 	tx := u.db.Debug().Model(&types.Users{}).Where("phone = ? AND hash_password = ?", login.Phone, pkg.EncryPassword(login.Password)).First(&user)
-	if tx.Error != nil {
-		return tx.Error
-	}
-	return nil
+	return tx.Error
+}
+
+func (u *UserMod) DeleteUserByID(ctx context.Context, user_id string) error {
+	var user types.Users
+	tx := u.db.Debug().WithContext(ctx).Model(&types.Users{}).Where("user_id = ?", user_id).Delete(&user)
+	return tx.Error
 }

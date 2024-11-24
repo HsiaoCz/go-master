@@ -9,6 +9,7 @@ import (
 
 type RecordModInter interface {
 	CreateRecord(context.Context, *types.Records) (*types.Records, error)
+	GetRecordsByUserID(context.Context, string) ([]*types.Records, error)
 }
 
 type RecordMod struct {
@@ -22,9 +23,13 @@ func RecordModInit(db *gorm.DB) *RecordMod {
 }
 
 func (r *RecordMod) CreateRecord(ctx context.Context, record *types.Records) (*types.Records, error) {
-	tx := r.db.Debug().Model(&types.Records{}).Create(record)
+	tx := r.db.Debug().WithContext(ctx).Model(&types.Records{}).Create(record)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
 	return record, nil
+}
+
+func (r *RecordMod) GetRecordsByUserID(ctx context.Context, user_id string) (*types.Records, error) {
+	return nil, nil
 }
