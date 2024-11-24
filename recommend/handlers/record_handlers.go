@@ -19,3 +19,7 @@ func RecordHandlersInit(record mod.RecordModInter) *RecordHandlers {
 func (rh *RecordHandlers) HandleCreateRecord(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
+
+func (rh *RecordHandlers) HandleGetRecordsByUserID(w http.ResponseWriter, r *http.Request) error {
+	return nil
+}

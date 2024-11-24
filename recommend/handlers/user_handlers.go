@@ -30,3 +30,7 @@ func (u *UserHandlers) HandleGetUserByID(w http.ResponseWriter, r *http.Request)
 	user_id := r.PathValue("user_id")
 	return WriteJson(w, http.StatusOK, user_id)
 }
+
+func (u *UserHandlers)HandleDeleteUserByID(w http.ResponseWriter, r *http.Request)error{
+	return nil
+}
