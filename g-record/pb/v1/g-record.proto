@@ -1,0 +1,17 @@
+syntax="proto3";
+
+package v1;
+
+option go_package ="./;v1";
+
+service RecordService{
+    rpc CreateRecord(CreateRecordRequest) returns (CreateRecordResponse){}
+}
+
+message CreateRecordRequest{
+
+}
+
+message CreateRecordResponse{
+    
+}
