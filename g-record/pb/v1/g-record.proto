@@ -9,9 +9,23 @@ service RecordService{
 }
 
 message CreateRecordRequest{
-
+    string userID=1;
+    string bookID=2;
+    string title=3;
+    string coverImage=4;
+    string auther=5;
+    string typeName=6;
+    string device=7;
 }
 
 message CreateRecordResponse{
-    
+    string recordID=1;    
+    string userID=2;
+    string bookID=3;
+    string title=4;
+    string coverImage=5;
+    string auther=6;
+    string typeName=7;
+    string device=8;
+    string createdAt=9;
 }
