@@ -6,6 +6,7 @@ toolchain go1.22.9
 
 require (
 	github.com/anthdm/superkit v0.0.0-20240701091803-e7f8e0aad3e9
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/mattn/go-sqlite3 v1.14.24

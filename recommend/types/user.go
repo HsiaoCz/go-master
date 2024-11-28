@@ -58,3 +58,8 @@ type UserUpdateParams struct {
 	Avatar          string `json:"avatar"`
 	BackgroundImage string `json:"background_image"`
 }
+
+type UserInfo struct {
+	UserID string
+	Role   bool
+}

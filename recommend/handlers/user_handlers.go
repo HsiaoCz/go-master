@@ -44,5 +44,15 @@ func (u *UserHandlers) HandleGetUserByID(w http.ResponseWriter, r *http.Request)
 }
 
 func (u *UserHandlers) HandleDeleteUserByID(w http.ResponseWriter, r *http.Request) error {
-	return nil
+	userInfo, ok := r.Context().Value(types.CtxUserInfoKey).(*types.UserInfo)
+	if !ok {
+		return ErrorMessage(http.StatusNonAuthoritativeInfo, "your have no rights to do this shit....")
+	}
+	if err := u.mod.DeleteUserByID(r.Context(), userInfo.UserID); err != nil {
+		return ErrorMessage(http.StatusInternalServerError, err.Error())
+	}
+	return WriteJson(w, http.StatusOK, map[string]any{
+		"status":  http.StatusOK,
+		"message": "delete user success",
+	})
 }
