@@ -65,12 +65,10 @@ func main() {
 	}()
 
 	var (
-		port           = os.Getenv("PORT")
-		router         = http.NewServeMux()
-		userData       = mod.UserModInit(db.Get())
-		recordData     = mod.RecordModInit(db.Get())
-		userHandlers   = handlers.UserHandlersInit(userData)
-		recordHandlers = handlers.RecordHandlersInit(recordData)
+		port         = os.Getenv("PORT")
+		router       = http.NewServeMux()
+		userData     = mod.UserModInit(db.Get())
+		userHandlers = handlers.UserHandlersInit(userData)
 	)
 
 	{
@@ -80,8 +78,6 @@ func main() {
 		router.HandleFunc("DELETE /api/v1/user", middlewares.JwtMiddleware(handlers.TransferHandlerfunc(userHandlers.HandleDeleteUserByID)))
 
 		// record
-		router.HandleFunc("POST /api/v1/record", middlewares.JwtMiddleware(handlers.TransferHandlerfunc(recordHandlers.HandleCreateRecord)))
-		router.HandleFunc("GET /api/v1/record/{user_id}", middlewares.JwtMiddleware(handlers.TransferHandlerfunc(recordHandlers.HandleGetRecordsByUserID)))
 	}
 
 	server := http.Server{

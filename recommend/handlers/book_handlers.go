@@ -9,12 +9,14 @@ import (
 )
 
 type BookHandlers struct {
-	book mod.BookModInter
+	record mod.RecordModInter
+	book   mod.BookModInter
 }
 
-func BookHandlersInit(book mod.BookModInter) *BookHandlers {
+func BookHandlersInit(book mod.BookModInter, record mod.RecordModInter) *BookHandlers {
 	return &BookHandlers{
-		book: book,
+		book:   book,
+		record: record,
 	}
 }
 
@@ -34,11 +36,29 @@ func (b *BookHandlers) HandleCreateBook(w http.ResponseWriter, r *http.Request) 
 }
 
 func (b *BookHandlers) HandleGetBookByAuther(w http.ResponseWriter, r *http.Request) error {
-	return nil
+	auther := r.URL.Query().Get("auther")
+	books, err := b.book.GetBookByAuther(r.Context(), auther)
+	if err != nil {
+		return ErrorMessage(http.StatusInternalServerError, err.Error())
+	}
+	return WriteJson(w, http.StatusOK, map[string]any{
+		"message": "get books success",
+		"status":  http.StatusOK,
+		"books":   books,
+	})
 }
 
 func (b *BookHandlers) HandleGetBookByID(w http.ResponseWriter, r *http.Request) error {
-	return nil
+	book_id := r.PathValue("book_id")
+	book, err := b.book.GetBookByID(r.Context(), book_id)
+	if err != nil {
+		return ErrorMessage(http.StatusInternalServerError, err.Error())
+	}
+	return WriteJson(w, http.StatusOK, map[string]any{
+		"message": "get book success",
+		"status":  http.StatusOK,
+		"book":    book,
+	})
 }
 
 func (b *BookHandlers) HandleGetBookByRecords(w http.ResponseWriter, r *http.Request) error {
