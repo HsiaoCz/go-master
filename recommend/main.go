@@ -12,6 +12,7 @@ import (
 
 	"github.com/HsiaoCz/go-master/recommend/db"
 	"github.com/HsiaoCz/go-master/recommend/handlers"
+	"github.com/HsiaoCz/go-master/recommend/handlers/middlewares"
 	"github.com/HsiaoCz/go-master/recommend/mod"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
@@ -64,16 +65,23 @@ func main() {
 	}()
 
 	var (
-		port         = os.Getenv("PORT")
-		router       = http.NewServeMux()
-		userData     = mod.UserModInit(db.Get())
-		userHandlers = handlers.UserHandlersInit(userData)
+		port           = os.Getenv("PORT")
+		router         = http.NewServeMux()
+		userData       = mod.UserModInit(db.Get())
+		recordData     = mod.RecordModInit(db.Get())
+		userHandlers   = handlers.UserHandlersInit(userData)
+		recordHandlers = handlers.RecordHandlersInit(recordData)
 	)
 
 	{
 		// user handlefunc
 		router.HandleFunc("POST /api/v1/user", handlers.TransferHandlerfunc(userHandlers.HandleCreateUser))
 		router.HandleFunc("GET /api/v1/user/{user_id}", handlers.TransferHandlerfunc(userHandlers.HandleCreateUser))
+		router.HandleFunc("DELETE /api/v1/user", middlewares.JwtMiddleware(handlers.TransferHandlerfunc(userHandlers.HandleDeleteUserByID)))
+
+		// record
+		router.HandleFunc("POST /api/v1/record", middlewares.JwtMiddleware(handlers.TransferHandlerfunc(recordHandlers.HandleCreateRecord)))
+		router.HandleFunc("GET /api/v1/record/{user_id}", middlewares.JwtMiddleware(handlers.TransferHandlerfunc(recordHandlers.HandleGetRecordsByUserID)))
 	}
 
 	server := http.Server{

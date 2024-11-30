@@ -30,6 +30,11 @@ func (r *RecordMod) CreateRecord(ctx context.Context, record *types.Records) (*t
 	return record, nil
 }
 
-func (r *RecordMod) GetRecordsByUserID(ctx context.Context, user_id string) (*types.Records, error) {
-	return nil, nil
+func (r *RecordMod) GetRecordsByUserID(ctx context.Context, user_id string) ([]*types.Records, error) {
+	var records []*types.Records
+	tx := r.db.Debug().WithContext(ctx).Model(&types.Records{}).Where("user_id = ?", user_id).Find(&records)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	return records, nil
 }
