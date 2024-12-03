@@ -11,7 +11,7 @@ import (
 type UserModInter interface {
 	CreateUser(context.Context, *types.Users) (*types.Users, error)
 	GetUserByID(context.Context, string) (*types.Users, error)
-	GetUserByPhoneAndPassword(context.Context, *types.Login) (*types.Users, error)
+	GetUserByPhoneAndPassword(context.Context, *types.Login) error
 	DeleteUserByID(context.Context, string) error
 }
 

@@ -68,7 +68,8 @@ func main() {
 		port         = os.Getenv("PORT")
 		router       = http.NewServeMux()
 		userData     = mod.UserModInit(db.Get())
-		userHandlers = handlers.UserHandlersInit(userData)
+		senData      = mod.SessionModInit(db.Get())
+		userHandlers = handlers.UserHandlersInit(userData, senData)
 	)
 
 	{

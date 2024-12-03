@@ -9,12 +9,14 @@ import (
 )
 
 type UserHandlers struct {
-	mod *mod.UserMod
+	mod mod.UserModInter
+	sen mod.SessionModInter
 }
 
-func UserHandlersInit(mod *mod.UserMod) *UserHandlers {
+func UserHandlersInit(mod mod.UserModInter, sen mod.SessionModInter) *UserHandlers {
 	return &UserHandlers{
 		mod: mod,
+		sen: sen,
 	}
 }
 
