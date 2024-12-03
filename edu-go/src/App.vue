@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import FormPage from './views/FormPage.vue';
-
+import { RouterView } from 'vue-router';
 </script>
 
 <template>
-  <FormPage ></FormPage>
+  <RouterView />
 </template>
 
 <style scoped></style>
