@@ -1,6 +1,7 @@
 package types
 
 import (
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -26,4 +27,17 @@ type CreateRecordParams struct {
 	TypeName   string `gorm:"column:type_name;" json:"type_name"`
 	// 用户设备信息
 	Device string `gorm:"column:device;" json:"device"`
+}
+
+func CreateRecordFromParams(record_params CreateRecordParams) *Records {
+	return &Records{
+		RecordID:   uuid.New().String(),
+		UserID:     record_params.UserID,
+		BookID:     record_params.BookID,
+		Title:      record_params.Title,
+		CoverImage: record_params.CoverImage,
+		Auther:     record_params.Auther,
+		TypeName:   record_params.TypeName,
+		Device:     record_params.Device,
+	}
 }

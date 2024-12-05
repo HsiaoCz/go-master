@@ -54,10 +54,30 @@ func (b *BookHandlers) HandleGetBookByID(w http.ResponseWriter, r *http.Request)
 	if err != nil {
 		return ErrorMessage(http.StatusInternalServerError, err.Error())
 	}
+	// after getting book we should create a record
+
+	userInfo, ok := r.Context().Value(types.CtxUserInfoKey).(*types.UserInfo)
+	if !ok {
+		return ErrorMessage(http.StatusInternalServerError, "something wrong")
+	}
+	record_param := types.CreateRecordParams{
+		BookID:     book_id,
+		CoverImage: book.CoverImage,
+		Title:      book.Title,
+		Auther:     book.Auther,
+		Device:     string(r.UserAgent()),
+		UserID:     userInfo.UserID,
+		TypeName:   "see",
+	}
+	record, err := b.record.CreateRecord(r.Context(), types.CreateRecordFromParams(record_param))
+	if err != nil {
+		return ErrorMessage(http.StatusInternalServerError, err.Error())
+	}
 	return WriteJson(w, http.StatusOK, map[string]any{
 		"message": "get book success",
 		"status":  http.StatusOK,
 		"book":    book,
+		"record":  record,
 	})
 }
 
