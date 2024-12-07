@@ -24,11 +24,20 @@ func SessionStoreInit(db *gorm.DB) *SessionStore {
 }
 
 func (s *SessionStore) CreateSession(ctx context.Context, session *types.Sessions) (*types.Sessions, error) {
-	return nil, nil
+	tx := s.db.Debug().WithContext(ctx).Model(&types.Sessions{}).Create(session)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	return session, nil
 }
 
-func (s *SessionStore) GetSessionByID(ctx context.Context, session_id string) (*types.Sessions, error) {
-	return nil, nil
+func (s *SessionStore) GetSessionByID(ctx context.Context, token string) (*types.Sessions, error) {
+	var session types.Sessions
+	tx := s.db.Debug().WithContext(ctx).Model(&types.Sessions{}).Where("token = ?", token).First(&session)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	return &session, nil
 }
 
 func (s *SessionStore) DeleteSessionByToken(ctx context.Context, token string) error {
