@@ -10,6 +10,7 @@ import (
 type SessionModInter interface {
 	CreateSession(context.Context, *types.Sessions) (*types.Sessions, error)
 	GetSessionByToken(context.Context, string) (*types.Sessions, error)
+	DeleteSessionByToken(context.Context, string) error
 }
 
 type SessionMod struct {
@@ -30,11 +31,17 @@ func (s *SessionMod) CreateSession(ctx context.Context, session *types.Sessions)
 	return session, nil
 }
 
-func (s *SessionMod)GetSessionByToken(ctx context.Context,token string)(*types.Sessions,error){
+func (s *SessionMod) GetSessionByToken(ctx context.Context, token string) (*types.Sessions, error) {
 	var session types.Sessions
-	tx:=s.db.Debug().WithContext(ctx).Model(&types.Sessions{}).Where("token = ?",token).First(&session)
-	if tx.Error!=nil{
-		return nil,tx.Error
+	tx := s.db.Debug().WithContext(ctx).Model(&types.Sessions{}).Where("token = ?", token).First(&session)
+	if tx.Error != nil {
+		return nil, tx.Error
 	}
-	return &session,nil
+	return &session, nil
+}
+
+func (s *SessionMod) DeleteSessionByToken(ctx context.Context, token string) error {
+	var session types.Sessions
+	tx := s.db.Debug().WithContext(ctx).Model(&types.Sessions{}).Where("token = ?", token).Delete(&session)
+	return tx.Error
 }
