@@ -13,7 +13,7 @@ import (
 	"github.com/HsiaoCz/go-master/recommend/db"
 	"github.com/HsiaoCz/go-master/recommend/handlers"
 	"github.com/HsiaoCz/go-master/recommend/handlers/middlewares"
-	"github.com/HsiaoCz/go-master/recommend/mod"
+	"github.com/HsiaoCz/go-master/recommend/storage"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -67,8 +67,8 @@ func main() {
 	var (
 		port         = os.Getenv("PORT")
 		router       = http.NewServeMux()
-		userData     = mod.UserModInit(db.Get())
-		senData      = mod.SessionModInit(db.Get())
+		userData     = storage.UserStoreInit(db.Get())
+		senData      = storage.SessionStoreInit(db.Get())
 		userHandlers = handlers.UserHandlersInit(userData, senData)
 	)
 

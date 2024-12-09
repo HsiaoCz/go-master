@@ -4,16 +4,16 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/HsiaoCz/go-master/recommend/mod"
+	"github.com/HsiaoCz/go-master/recommend/storage"
 	"github.com/HsiaoCz/go-master/recommend/types"
 )
 
 type BookHandlers struct {
-	record mod.RecordModInter
-	book   mod.BookModInter
+	record storage.RecordStorer
+	book   storage.BookStorer
 }
 
-func BookHandlersInit(book mod.BookModInter, record mod.RecordModInter) *BookHandlers {
+func BookHandlersInit(book storage.BookStorer, record storage.RecordStorer) *BookHandlers {
 	return &BookHandlers{
 		book:   book,
 		record: record,

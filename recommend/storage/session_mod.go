@@ -1,4 +1,4 @@
-package mod
+package storage
 
 import (
 	"context"
@@ -7,23 +7,23 @@ import (
 	"gorm.io/gorm"
 )
 
-type SessionModInter interface {
+type SessionStorer interface {
 	CreateSession(context.Context, *types.Sessions) (*types.Sessions, error)
 	GetSessionByToken(context.Context, string) (*types.Sessions, error)
 	DeleteSessionByToken(context.Context, string) error
 }
 
-type SessionMod struct {
+type SessionStore struct {
 	db *gorm.DB
 }
 
-func SessionModInit(db *gorm.DB) *SessionMod {
-	return &SessionMod{
+func SessionStoreInit(db *gorm.DB) *SessionStore {
+	return &SessionStore{
 		db: db,
 	}
 }
 
-func (s *SessionMod) CreateSession(ctx context.Context, session *types.Sessions) (*types.Sessions, error) {
+func (s *SessionStore) CreateSession(ctx context.Context, session *types.Sessions) (*types.Sessions, error) {
 	tx := s.db.Debug().WithContext(ctx).Model(&types.Sessions{}).Create(session)
 	if tx.Error != nil {
 		return nil, tx.Error
@@ -31,7 +31,7 @@ func (s *SessionMod) CreateSession(ctx context.Context, session *types.Sessions)
 	return session, nil
 }
 
-func (s *SessionMod) GetSessionByToken(ctx context.Context, token string) (*types.Sessions, error) {
+func (s *SessionStore) GetSessionByToken(ctx context.Context, token string) (*types.Sessions, error) {
 	var session types.Sessions
 	tx := s.db.Debug().WithContext(ctx).Model(&types.Sessions{}).Where("token = ?", token).First(&session)
 	if tx.Error != nil {
@@ -40,7 +40,7 @@ func (s *SessionMod) GetSessionByToken(ctx context.Context, token string) (*type
 	return &session, nil
 }
 
-func (s *SessionMod) DeleteSessionByToken(ctx context.Context, token string) error {
+func (s *SessionStore) DeleteSessionByToken(ctx context.Context, token string) error {
 	var session types.Sessions
 	tx := s.db.Debug().WithContext(ctx).Model(&types.Sessions{}).Where("token = ?", token).Delete(&session)
 	return tx.Error

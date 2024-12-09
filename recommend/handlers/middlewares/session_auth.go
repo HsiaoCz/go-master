@@ -3,14 +3,14 @@ package middlewares
 import (
 	"net/http"
 
-	"github.com/HsiaoCz/go-master/recommend/mod"
+	"github.com/HsiaoCz/go-master/recommend/storage"
 )
 
 type SessionAuth struct {
-	sen mod.SessionModInter
+	sen storage.SessionStorer
 }
 
-func SessionAuthInit(sen mod.SessionModInter) *SessionAuth {
+func SessionAuthInit(sen storage.SessionStorer) *SessionAuth {
 	return &SessionAuth{
 		sen: sen,
 	}

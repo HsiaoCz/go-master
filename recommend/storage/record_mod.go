@@ -1,4 +1,4 @@
-package mod
+package storage
 
 import (
 	"context"
@@ -7,22 +7,22 @@ import (
 	"gorm.io/gorm"
 )
 
-type RecordModInter interface {
+type RecordStorer interface {
 	CreateRecord(context.Context, *types.Records) (*types.Records, error)
 	GetRecordsByUserID(context.Context, string) ([]*types.Records, error)
 }
 
-type RecordMod struct {
+type RecordStore struct {
 	db *gorm.DB
 }
 
-func RecordModInit(db *gorm.DB) *RecordMod {
-	return &RecordMod{
+func RecordStoreInit(db *gorm.DB) *RecordStore {
+	return &RecordStore{
 		db: db,
 	}
 }
 
-func (r *RecordMod) CreateRecord(ctx context.Context, record *types.Records) (*types.Records, error) {
+func (r *RecordStore) CreateRecord(ctx context.Context, record *types.Records) (*types.Records, error) {
 	tx := r.db.Debug().WithContext(ctx).Model(&types.Records{}).Create(record)
 	if tx.Error != nil {
 		return nil, tx.Error
@@ -30,7 +30,7 @@ func (r *RecordMod) CreateRecord(ctx context.Context, record *types.Records) (*t
 	return record, nil
 }
 
-func (r *RecordMod) GetRecordsByUserID(ctx context.Context, user_id string) ([]*types.Records, error) {
+func (r *RecordStore) GetRecordsByUserID(ctx context.Context, user_id string) ([]*types.Records, error) {
 	var records []*types.Records
 	tx := r.db.Debug().WithContext(ctx).Model(&types.Records{}).Where("user_id = ?", user_id).Find(&records)
 	if tx.Error != nil {

@@ -4,16 +4,16 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/HsiaoCz/go-master/recommend/mod"
+	"github.com/HsiaoCz/go-master/recommend/storage"
 	"github.com/HsiaoCz/go-master/recommend/types"
 )
 
 type UserHandlers struct {
-	mod mod.UserModInter
-	sen mod.SessionModInter
+	mod storage.UserStorer
+	sen storage.SessionStorer
 }
 
-func UserHandlersInit(mod mod.UserModInter, sen mod.SessionModInter) *UserHandlers {
+func UserHandlersInit(mod storage.UserStorer, sen storage.SessionStorer) *UserHandlers {
 	return &UserHandlers{
 		mod: mod,
 		sen: sen,
