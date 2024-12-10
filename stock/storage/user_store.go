@@ -12,6 +12,8 @@ import (
 
 type UserStoreInter interface {
 	CreateUser(context.Context, *types.Users) (*types.Users, error)
+	GetUserByID(context.Context, primitive.ObjectID) (*types.Users, error)
+	DeleteUserByID(context.Context, primitive.ObjectID) error
 }
 
 type UserStore struct {

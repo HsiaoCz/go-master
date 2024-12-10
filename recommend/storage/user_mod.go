@@ -13,6 +13,7 @@ type UserStorer interface {
 	GetUserByID(context.Context, string) (*types.Users, error)
 	GetUserByPhoneAndPassword(context.Context, *types.Login) error
 	DeleteUserByID(context.Context, string) error
+	UpdateUser(context.Context, string, *types.UserUpdateParams) (*types.Users, error)
 }
 
 type UserStore struct {
@@ -52,4 +53,13 @@ func (u *UserStore) DeleteUserByID(ctx context.Context, user_id string) error {
 	var user types.Users
 	tx := u.db.Debug().WithContext(ctx).Model(&types.Users{}).Where("user_id = ?", user_id).Delete(&user)
 	return tx.Error
+}
+
+func (u *UserStore) UpdateUser(ctx context.Context, user_id string, params *types.UserUpdateParams) (*types.Users, error) {
+	var user types.Users
+	tx := u.db.Debug().WithContext(ctx).Model(types.Users{}).Where("user_id = ?", user_id).Updates(params).First(&user)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	return &user, nil
 }
