@@ -28,11 +28,19 @@ func (b *BookHandlers) HandleCreateBook(w http.ResponseWriter, r *http.Request) 
 	if !userInfo.Role {
 		return ErrorMessage(http.StatusNotAcceptable, "need admin")
 	}
-	var book types.CreateBookParams
-	if err := json.NewDecoder(r.Body).Decode(&book); err != nil {
+	var create_book_params types.CreateBookParams
+	if err := json.NewDecoder(r.Body).Decode(&create_book_params); err != nil {
 		return ErrorMessage(http.StatusBadRequest, err.Error())
 	}
-	return nil
+	book, err := b.book.CreateBook(r.Context(), types.CreateBookFromParams(create_book_params))
+	if err != nil {
+		return ErrorMessage(http.StatusInternalServerError, err.Error())
+	}
+	return WriteJson(w, http.StatusOK, map[string]any{
+		"status":  http.StatusOK,
+		"message": "create book success",
+		"data":    book,
+	})
 }
 
 func (b *BookHandlers) HandleGetBookByAuther(w http.ResponseWriter, r *http.Request) error {

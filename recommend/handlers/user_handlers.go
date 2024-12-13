@@ -3,9 +3,11 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/HsiaoCz/go-master/recommend/storage"
 	"github.com/HsiaoCz/go-master/recommend/types"
+	"github.com/google/uuid"
 )
 
 type UserHandlers struct {
@@ -57,4 +59,41 @@ func (u *UserHandlers) HandleDeleteUserByID(w http.ResponseWriter, r *http.Reque
 		"status":  http.StatusOK,
 		"message": "delete user success",
 	})
+}
+
+func (u *UserHandlers) HandleUserLogin(w http.ResponseWriter, r *http.Request) error {
+	var user_login_params types.UserLoginParams
+	if err := json.NewDecoder(r.Body).Decode(&user_login_params); err != nil {
+		return ErrorMessage(http.StatusBadRequest, err.Error())
+	}
+	user, err := u.mod.GetUserByPhoneAndPassword(r.Context(), &user_login_params)
+	if err != nil {
+		return ErrorMessage(http.StatusBadRequest, err.Error())
+	}
+	session := &types.Sessions{
+		Token:     uuid.New().String(),
+		UserID:    user.UserID,
+		IpAddress: r.RemoteAddr,
+		UserAgent: r.UserAgent(),
+		ExpiresAt: time.Now().Add(time.Hour * 24 * 30),
+	}
+	session, err = u.sen.CreateSession(r.Context(), session)
+	if err != nil {
+		return ErrorMessage(http.StatusInternalServerError, err.Error())
+	}
+	http.SetCookie(w, &http.Cookie{
+		Name:     "token",
+		Value:    session.Token,
+		Expires:  time.Now().Add(time.Hour * 24 * 30),
+		HttpOnly: true,
+	})
+	return WriteJson(w, http.StatusOK, map[string]any{
+		"status":  http.StatusOK,
+		"message": "login success",
+		"user":    user,
+	})
+}
+
+func (u *UserHandlers) HandleGetRecord(w http.ResponseWriter, r *http.Request) error {
+	return nil
 }

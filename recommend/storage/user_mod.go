@@ -11,7 +11,7 @@ import (
 type UserStorer interface {
 	CreateUser(context.Context, *types.Users) (*types.Users, error)
 	GetUserByID(context.Context, string) (*types.Users, error)
-	GetUserByPhoneAndPassword(context.Context, *types.Login) error
+	GetUserByPhoneAndPassword(context.Context, *types.UserLoginParams) (*types.Users, error)
 	DeleteUserByID(context.Context, string) error
 	UpdateUser(context.Context, string, *types.UserUpdateParams) (*types.Users, error)
 }
@@ -43,10 +43,13 @@ func (u *UserStore) GetUserByID(ctx context.Context, user_id string) (*types.Use
 	return &user, nil
 }
 
-func (u *UserStore) GetUserByPhoneAndPassword(ctx context.Context, login *types.Login) error {
+func (u *UserStore) GetUserByPhoneAndPassword(ctx context.Context, login *types.UserLoginParams) (*types.Users, error) {
 	var user types.Users
 	tx := u.db.Debug().Model(&types.Users{}).Where("phone = ? AND hash_password = ?", login.Phone, pkg.EncryPassword(login.Password)).First(&user)
-	return tx.Error
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	return &user, nil
 }
 
 func (u *UserStore) DeleteUserByID(ctx context.Context, user_id string) error {

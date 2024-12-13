@@ -45,7 +45,7 @@ func CreateUserFromParams(params CreateUserParams) *Users {
 	}
 }
 
-type Login struct {
+type UserLoginParams struct {
 	Phone    string `json:"phone"`
 	Password string `json:"password"`
 }
