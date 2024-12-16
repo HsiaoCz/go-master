@@ -13,12 +13,14 @@ import (
 type UserHandlers struct {
 	mod storage.UserStorer
 	sen storage.SessionStorer
+	rec storage.RecordStorer
 }
 
-func UserHandlersInit(mod storage.UserStorer, sen storage.SessionStorer) *UserHandlers {
+func UserHandlersInit(mod storage.UserStorer, sen storage.SessionStorer, rec storage.RecordStorer) *UserHandlers {
 	return &UserHandlers{
 		mod: mod,
 		sen: sen,
+		rec: rec,
 	}
 }
 
@@ -95,5 +97,13 @@ func (u *UserHandlers) HandleUserLogin(w http.ResponseWriter, r *http.Request) e
 }
 
 func (u *UserHandlers) HandleGetRecord(w http.ResponseWriter, r *http.Request) error {
-	return nil
+	session, ok := r.Context().Value(types.CtxUserInfoKey).(*types.Sessions)
+	if !ok {
+		return ErrorMessage(http.StatusNonAuthoritativeInfo, "please login")
+	}
+	records, err := u.rec.GetRecordsByUserID(r.Context(), session.UserID)
+	if err != nil {
+		return ErrorMessage(http.StatusInternalServerError, "you have no record")
+	}
+	return WriteJson(w, http.StatusOK, records)
 }

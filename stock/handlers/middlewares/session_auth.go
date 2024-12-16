@@ -26,8 +26,7 @@ func (a *AuthSessionMiddleware) AuthMiddleware(next http.Handler) http.HandlerFu
 			http.Error(w, "no auther information,please login", http.StatusNonAuthoritativeInfo)
 			return
 		}
-		token := cookie.Value
-		session, err := a.sen.GetSessionByToken(r.Context(), token)
+		session, err := a.sen.GetSessionByToken(r.Context(), cookie.Value)
 		if err != nil {
 			http.Error(w, "no auther information,please login", http.StatusNonAuthoritativeInfo)
 			return

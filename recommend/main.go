@@ -69,7 +69,8 @@ func main() {
 		router       = http.NewServeMux()
 		userData     = storage.UserStoreInit(db.Get())
 		senData      = storage.SessionStoreInit(db.Get())
-		userHandlers = handlers.UserHandlersInit(userData, senData)
+		recData      = storage.RecordStoreInit(db.Get())
+		userHandlers = handlers.UserHandlersInit(userData, senData, recData)
 	)
 
 	{
