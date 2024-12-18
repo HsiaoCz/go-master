@@ -24,6 +24,22 @@ class Users {
   public getUsername(): string {
     return this.username;
   }
+
+  public getEmail(): string {
+    return this.email;
+  }
+
+  public getUserID(): string {
+    return this.userID;
+  }
+
+  public getAge(): number {
+    return this.age;
+  }
+
+  public setPassword(password: string) {
+    this.password = randomUUID.toString();
+  }
 }
 
 export default Users;
