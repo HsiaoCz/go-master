@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Chat Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div id="auth-container" class="container mx-auto px-4 py-8">
+        <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+            <div id="login-form" class="space-y-4">
+                <h2 class="text-2xl font-bold text-center">Login</h2>
+                <input type="text" id="login-username" placeholder="Username" class="w-full p-2 border rounded">
+                <input type="password" id="login-password" placeholder="Password" class="w-full p-2 border rounded">
+                <button onclick="login()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Login</button>
+                <p class="text-center">Don't have an account? <a href="#" onclick="toggleAuth()" class="text-blue-500">Register</a></p>
+            </div>
+            <div id="register-form" class="hidden space-y-4">
+                <h2 class="text-2xl font-bold text-center">Register</h2>
+                <input type="text" id="register-username" placeholder="Username" class="w-full p-2 border rounded">
+                <input type="email" id="register-email" placeholder="Email" class="w-full p-2 border rounded">
+                <input type="password" id="register-password" placeholder="Password" class="w-full p-2 border rounded">
+                <button onclick="register()" class="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600">Register</button>
+                <p class="text-center">Already have an account? <a href="#" onclick="toggleAuth()" class="text-blue-500">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="chat-container" class="hidden container mx-auto px-4 py-8">
+        <div class="grid grid-cols-12 gap-4">
+            <!-- Sidebar -->
+            <div class="col-span-3 space-y-4">
+                <!-- Friends Section -->
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold">Friends</h2>
+                        <button onclick="showAddFriendModal()" class="bg-green-500 text-white p-2 rounded hover:bg-green-600">Add Friend</button>
+                    </div>
+                    <div id="friends-list" class="space-y-2"></div>
+                    
+                    <!-- Friend Requests -->
+                    <div class="mt-4">
+                        <h3 class="font-bold mb-2">Friend Requests</h3>
+                        <div id="friend-requests" class="space-y-2"></div>
+                    </div>
+                </div>
+
+                <!-- Rooms Section -->
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold">Rooms</h2>
+                        <button onclick="showCreateRoomModal()" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">New Room</button>
+                    </div>
+                    <div id="rooms-list" class="space-y-2"></div>
+                </div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="col-span-9 bg-white rounded-lg shadow-md p-4">
+                <div id="chat-header" class="mb-4 p-2 border-b">
+                    <h2 id="current-chat-name" class="text-xl font-bold">Select a chat</h2>
+                </div>
+                <div id="messages" class="h-96 overflow-y-auto mb-4 p-4 border rounded"></div>
+                <form id="message-form" class="flex gap-2">
+                    <input type="text" id="message-input" placeholder="Type your message..." class="flex-grow p-2 border rounded">
+                    <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Friend Modal -->
+    <div id="add-friend-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-96">
+            <h2 class="text-xl font-bold mb-4">Add Friend</h2>
+            <input type="text" id="friend-username" placeholder="Friend's Username" class="w-full p-2 border rounded mb-4">
+            <div class="flex justify-end gap-2">
+                <button onclick="hideAddFriendModal()" class="bg-gray-500 text-white p-2 rounded hover:bg-gray-600">Cancel</button>
+                <button onclick="addFriend()" class="bg-green-500 text-white p-2 rounded hover:bg-green-600">Add Friend</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Room Modal -->
+    <div id="create-room-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-96">
+            <h2 class="text-xl font-bold mb-4">Create New Room</h2>
+            <input type="text" id="room-name" placeholder="Room Name" class="w-full p-2 border rounded mb-2">
+            <textarea id="room-description" placeholder="Room Description" class="w-full p-2 border rounded mb-2"></textarea>
+            <div class="flex items-center mb-4">
+                <input type="checkbox" id="room-private" class="mr-2">
+                <label for="room-private">Private Room</label>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button onclick="hideCreateRoomModal()" class="bg-gray-500 text-white p-2 rounded hover:bg-gray-600">Cancel</button>
+                <button onclick="createRoom()" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRoom = null;
+        let currentPrivateChat = null;
+        let ws = null;
+        const token = localStorage.getItem('token');
+
+        function toggleAuth() {
+            document.getElementById('login-form').classList.toggle('hidden');
+            document.getElementById('register-form').classList.toggle('hidden');
+        }
+
+        async function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (!response.ok) throw new Error('Login failed');
+
+                const data = await response.json();
+                localStorage.setItem('token', data.token);
+                showChat();
+                loadRooms();
+                loadFriends();
+                loadFriendRequests();
+            } catch (error) {
+                alert('Login failed: ' + error.message);
+            }
+        }
+
+        async function register() {
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                if (!response.ok) throw new Error('Registration failed');
+
+                toggleAuth();
+            } catch (error) {
+                alert('Registration failed: ' + error.message);
+            }
+        }
+
+        async function loadRooms() {
+            try {
+                const response = await fetch('/api/rooms', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+
+                if (!response.ok) throw new Error('Failed to load rooms');
+
+                const rooms = await response.json();
+                const roomsList = document.getElementById('rooms-list');
+                roomsList.innerHTML = '';
+
+                rooms.forEach(room => {
+                    const div = document.createElement('div');
+                    div.className = 'p-2 hover:bg-gray-100 cursor-pointer rounded';
+                    div.textContent = room.name;
+                    div.onclick = () => joinRoom(room.id);
+                    roomsList.appendChild(div);
+                });
+            } catch (error) {
+                alert('Error loading rooms: ' + error.message);
+            }
+        }
+
+        async function createRoom() {
+            const name = document.getElementById('room-name').value;
+            const description = document.getElementById('room-description').value;
+            const isPrivate = document.getElementById('room-private').checked;
+
+            try {
+                const response = await fetch('/api/rooms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                    body: JSON.stringify({ name, description, private: isPrivate })
+                });
+
+                if (!response.ok) throw new Error('Failed to create room');
+
+                hideCreateRoomModal();
+                loadRooms();
+            } catch (error) {
+                alert('Error creating room: ' + error.message);
+            }
+        }
+
+        async function joinRoom(roomId) {
+            try {
+                const response = await fetch(`/api/rooms/${roomId}/join`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+
+                if (!response.ok) throw new Error('Failed to join room');
+
+                currentRoom = roomId;
+                currentPrivateChat = null;
+                document.getElementById('current-chat-name').textContent = 'Room: ' + roomId;
+                document.getElementById('messages').innerHTML = '';
+                connectWebSocket();
+            } catch (error) {
+                alert('Error joining room: ' + error.message);
+            }
+        }
+
+        function connectWebSocket() {
+            if (ws) {
+                ws.close();
+            }
+
+            ws = new WebSocket(`ws://${window.location.host}/api/ws`);
+            
+            ws.onmessage = function(event) {
+                const message = JSON.parse(event.data);
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'mb-2';
+                messageDiv.innerHTML = `<strong>${message.username}:</strong> ${message.content}`;
+                document.getElementById('messages').appendChild(messageDiv);
+                messageDiv.scrollIntoView();
+            };
+
+            ws.onclose = function() {
+                setTimeout(connectWebSocket, 1000);
+            };
+        }
+
+        async function loadFriends() {
+            try {
+                const response = await fetch('/api/friends', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+
+                if (!response.ok) throw new Error('Failed to load friends');
+
+                const friends = await response.json();
+                const friendsList = document.getElementById('friends-list');
+                friendsList.innerHTML = '';
+
+                friends.forEach(friend => {
+                    const div = document.createElement('div');
+                    div.className = 'p-2 hover:bg-gray-100 cursor-pointer rounded flex justify-between items-center';
+                    div.innerHTML = `
+                        <span>${friend.username}</span>
+                        <button onclick="startPrivateChat(${friend.friend_id}, '${friend.username}')" 
+                                class="text-sm bg-blue-500 text-white px-2 py-1 rounded">
+                            Chat
+                        </button>
+                    `;
+                    friendsList.appendChild(div);
+                });
+            } catch (error) {
+                alert('Error loading friends: ' + error.message);
+            }
+        }
+
+        async function loadFriendRequests() {
+            try {
+                const response = await fetch('/api/friends/requests', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+
+                if (!response.ok) throw new Error('Failed to load friend requests');
+
+                const requests = await response.json();
+                const requestsDiv = document.getElementById('friend-requests');
+                requestsDiv.innerHTML = '';
+
+                requests.forEach(request => {
+                    const div = document.createElement('div');
+                    div.className = 'p-2 bg-gray-50 rounded flex justify-between items-center';
+                    div.innerHTML = `
+                        <span>${request.username}</span>
+                        <button onclick="acceptFriendRequest(${request.user_id})" 
+                                class="text-sm bg-green-500 text-white px-2 py-1 rounded">
+                            Accept
+                        </button>
+                    `;
+                    requestsDiv.appendChild(div);
+                });
+            } catch (error) {
+                alert('Error loading friend requests: ' + error.message);
+            }
+        }
+
+        async function addFriend() {
+            const username = document.getElementById('friend-username').value;
+            try {
+                const response = await fetch(`/api/friends/${username}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+
+                if (!response.ok) throw new Error('Failed to add friend');
+
+                hideAddFriendModal();
+                loadFriends();
+            } catch (error) {
+                alert('Error adding friend: ' + error.message);
+            }
+        }
+
+        async function acceptFriendRequest(userId) {
+            try {
+                const response = await fetch(`/api/friends/${userId}/accept`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+
+                if (!response.ok) throw new Error('Failed to accept friend request');
+
+                loadFriendRequests();
+                loadFriends();
+            } catch (error) {
+                alert('Error accepting friend request: ' + error.message);
+            }
+        }
+
+        async function startPrivateChat(userId, username) {
+            currentRoom = null;
+            currentPrivateChat = userId;
+            document.getElementById('current-chat-name').textContent = `Chat with ${username}`;
+            document.getElementById('messages').innerHTML = '';
+
+            try {
+                const response = await fetch(`/api/messages/${userId}`, {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+
+                if (!response.ok) throw new Error('Failed to load messages');
+
+                const messages = await response.json();
+                const messagesDiv = document.getElementById('messages');
+                
+                messages.reverse().forEach(message => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'mb-2';
+                    messageDiv.innerHTML = `<strong>${message.sender_id === userId ? username : 'You'}:</strong> ${message.content}`;
+                    messagesDiv.appendChild(messageDiv);
+                });
+
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                connectWebSocket();
+            } catch (error) {
+                alert('Error loading messages: ' + error.message);
+            }
+        }
+
+        document.getElementById('message-form').onsubmit = async function(e) {
+            e.preventDefault();
+            const input = document.getElementById('message-input');
+            if (!input.value) return;
+
+            if (currentPrivateChat) {
+                try {
+                    const response = await fetch(`/api/messages/${currentPrivateChat}/send`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + localStorage.getItem('token')
+                        },
+                        body: JSON.stringify({ content: input.value })
+                    });
+
+                    if (!response.ok) throw new Error('Failed to send message');
+                    input.value = '';
+                } catch (error) {
+                    alert('Error sending message: ' + error.message);
+                }
+            } else if (currentRoom && ws) {
+                ws.send(input.value);
+                input.value = '';
+            }
+        };
+
+        function showAddFriendModal() {
+            document.getElementById('add-friend-modal').classList.remove('hidden');
+        }
+
+        function hideAddFriendModal() {
+            document.getElementById('add-friend-modal').classList.add('hidden');
+            document.getElementById('friend-username').value = '';
+        }
+
+        function showChat() {
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('chat-container').classList.remove('hidden');
+        }
+
+        function showCreateRoomModal() {
+            document.getElementById('create-room-modal').classList.remove('hidden');
+        }
+
+        function hideCreateRoomModal() {
+            document.getElementById('create-room-modal').classList.add('hidden');
+        }
+
+        if (token) {
+            showChat();
+            loadRooms();
+            loadFriends();
+            loadFriendRequests();
+        }
+    </script>
+</body>
+</html>
