@@ -11,12 +11,12 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	// "github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
 	// Load environment variables
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load("../../.env.example"); err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
@@ -28,10 +28,10 @@ func main() {
 	r := mux.NewRouter()
 
 	// Add metrics middleware
-	r.Use(middleware.MetricsMiddleware)
+	// r.Use(middleware.MetricsMiddleware)
 
 	// Metrics endpoint
-	r.Handle("/metrics", promhttp.Handler())
+	// r.Handle("/metrics", promhttp.Handler())
 
 	// Public routes
 	r.HandleFunc("/api/auth/register", handlers.Register).Methods("POST")
@@ -73,7 +73,7 @@ func main() {
 	api.HandleFunc("/ws", handlers.HandleWebSocket)
 
 	// Serve static files
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("static")))
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("../../static")))
 
 	port := os.Getenv("PORT")
 	if port == "" {
