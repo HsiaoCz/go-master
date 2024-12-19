@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -202,12 +203,18 @@ func (c *Client) writePump() {
 	}
 }
 
-func JoinRoom(w http.ResponseWriter, r *http.Request) {
+func JoinRoomWebSocket(w http.ResponseWriter, r *http.Request) {
 	claims := r.Context().Value("user").(*middleware.Claims)
 	roomID := r.URL.Query().Get("id")
 
 	if roomID == "" {
 		http.Error(w, "Room ID is required", http.StatusBadRequest)
+		return
+	}
+
+	roomIDInt, err := strconv.ParseInt(roomID, 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid room ID", http.StatusBadRequest)
 		return
 	}
 
@@ -235,10 +242,10 @@ func JoinRoom(w http.ResponseWriter, r *http.Request) {
 
 	// Join new room
 	roomsMutex.Lock()
-	room, ok := rooms[int64(roomID)]
+	room, ok := rooms[roomIDInt]
 	if !ok {
-		room = newRoom(int64(roomID))
-		rooms[int64(roomID)] = room
+		room = newRoom(roomIDInt)
+		rooms[roomIDInt] = room
 		go room.run()
 	}
 	roomsMutex.Unlock()

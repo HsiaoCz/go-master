@@ -11,6 +11,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
@@ -25,6 +26,12 @@ func main() {
 	}
 
 	r := mux.NewRouter()
+
+	// Add metrics middleware
+	r.Use(middleware.MetricsMiddleware)
+
+	// Metrics endpoint
+	r.Handle("/metrics", promhttp.Handler())
 
 	// Public routes
 	r.HandleFunc("/api/auth/register", handlers.Register).Methods("POST")
@@ -44,7 +51,7 @@ func main() {
 	// Room routes
 	api.HandleFunc("/rooms", handlers.CreateRoom).Methods("POST")
 	api.HandleFunc("/rooms", handlers.GetRooms).Methods("GET")
-	api.HandleFunc("/rooms/{id}/join", handlers.JoinRoom).Methods("POST")
+	api.HandleFunc("/rooms/{id}/join", handlers.JoinRoomHTTP).Methods("POST")
 
 	// Friend routes
 	api.HandleFunc("/friends", handlers.GetFriends).Methods("GET")
@@ -74,5 +81,6 @@ func main() {
 	}
 
 	log.Printf("Server starting on http://localhost:%s\n", port)
+	log.Printf("Metrics available on http://localhost:%s/metrics\n", port)
 	log.Fatal(http.ListenAndServe(":"+port, r))
 }

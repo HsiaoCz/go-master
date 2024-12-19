@@ -88,7 +88,7 @@ func GetRooms(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(rooms)
 }
 
-func JoinRoom(w http.ResponseWriter, r *http.Request) {
+func JoinRoomHTTP(w http.ResponseWriter, r *http.Request) {
 	claims := r.Context().Value("user").(*middleware.Claims)
 	vars := mux.Vars(r)
 	roomID := vars["id"]
