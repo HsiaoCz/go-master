@@ -15,7 +15,7 @@ import (
 type MongoRepository struct {
 	db *mongo.Database
 }
-
+// Initialize MongoDB repository
 func NewMongoRepository(uri string) (*MongoRepository, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -39,6 +39,7 @@ func (r *MongoRepository) CreateUser(ctx context.Context, user *models.User) err
 	return err
 }
 
+// User Repository Implementation
 func (r *MongoRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*models.User, error) {
 	collection := r.db.Collection("users")
 	var user models.User
@@ -49,6 +50,7 @@ func (r *MongoRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*model
 	return &user, nil
 }
 
+// User Repository Implementation
 func (r *MongoRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	collection := r.db.Collection("users")
 	var user models.User
@@ -59,6 +61,7 @@ func (r *MongoRepository) GetUserByEmail(ctx context.Context, email string) (*mo
 	return &user, nil
 }
 
+// User Repository Implementation
 func (r *MongoRepository) UpdateUser(ctx context.Context, user *models.User) error {
 	collection := r.db.Collection("users")
 	_, err := collection.UpdateOne(ctx, bson.M{"_id": user.ID}, bson.M{"$set": user})
@@ -71,7 +74,7 @@ func (r *MongoRepository) CreateProduct(ctx context.Context, product *models.Pro
 	_, err := collection.InsertOne(ctx, product)
 	return err
 }
-
+// Product Repository Implementation
 func (r *MongoRepository) GetProductByID(ctx context.Context, id uuid.UUID) (*models.Product, error) {
 	collection := r.db.Collection("products")
 	var product models.Product
@@ -82,6 +85,7 @@ func (r *MongoRepository) GetProductByID(ctx context.Context, id uuid.UUID) (*mo
 	return &product, nil
 }
 
+// Product Repository Implementation
 func (r *MongoRepository) ListProducts(ctx context.Context, skip, limit int) ([]*models.Product, error) {
 	collection := r.db.Collection("products")
 	opts := options.Find().SetSkip(int64(skip)).SetLimit(int64(limit))

@@ -1,0 +1,34 @@
+{
+    "exchange": {
+        "name": "binance",
+        "apiKey": "",
+        "apiSecret": "",
+        "testnet": true
+    },
+    "trading": {
+        "symbols": ["BTC-USDT"],
+        "interval": "1h",
+        "strategy": "ma_crossover",
+        "updateInterval": "1m",
+        "strategies": {
+            "ma_crossover": {
+                "shortPeriod": 10,
+                "longPeriod": 20
+            }
+        }
+    },
+    "risk": {
+        "initialBalance": 10000,
+        "riskPerTrade": 1.0,
+        "maxDrawdown": 20.0,
+        "maxPositions": 3,
+        "dailyLossLimit": 500.0
+    },
+    "logger": {
+        "level": "info",
+        "file": "trading.log",
+        "maxSize": 100,
+        "maxBackups": 3,
+        "maxAge": 28
+    }
+}

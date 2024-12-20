@@ -107,3 +107,12 @@ func (u *UserHandlers) HandleGetRecord(w http.ResponseWriter, r *http.Request) e
 	}
 	return WriteJson(w, http.StatusOK, records)
 }
+
+func (u *UserHandlers) HandleGetUserByPhone(w http.ResponseWriter, r *http.Request) error {
+	phone := r.URL.Query().Get("phone")
+	user, err := u.mod.GetUserByPhone(r.Context(), phone)
+	if err != nil {
+		return ErrorMessage(http.StatusInternalServerError, err.Error())
+	}
+	return WriteJson(w, http.StatusOK, user)
+}
