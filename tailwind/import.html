@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <!-- text-color-shade(色度) 代表文本颜色 -->
+    <p class="text-black">Color Black</p>
+    <p class="text-white">Color White</p>
+    <p class="text-red-500">Color Red 500</p>
+    <p class="text-blue-500">Color Blue 500</p>
+    <p class="text-gray-500">Color Gray 500</p>
+    <p class="text-green-500">Color Green 500</p>
+
+    <!-- bg-color-shade 代表背景颜色 -->
+    <p class="bg-white">BgColor White</p>
+    <p class="bg-red-500">BgColor Red 500</p>
+    <p class="bg-black text-white">BgColor Black</p>
+
+    <!-- underline 代表下划线 -->
+    <p class="underline">UlColor Default</p>
+    <p class="underline decoration-red-500">UlColor Red 500</p>
+    <p class="underline decoration-green-500">UlColor Green 500</p>
+
+    <!--border 代表边框  border-color-shade 可以给边框添加颜色-->
+    <input type="text" class="border" />
+    <input type="text" class="border border-red-500" />
+    <input type="text" class="border border-green-500" />
+
+    <!-- divide-[direct] divide-color-shade 间隔 divide-x或divide-y表示间隔的方向 x横向 y纵向-->
+    <div class="divide-y divide-red-500">
+      <div>Item 1</div>
+      <div>Item 2</div>
+      <div>Item 3</div>
+    </div>
+
+    <!-- outline轮廓 -->
+    <button class="outline">OlColor Default</button>
+    <button class="outline outline-red-500">OlColor Red 500</button>
+    <button class="outline outline-green-500">OlColor Green 500</button>
+
+    <!-- 盒子阴影颜色：shadow-[container] shadow-[color]-[shade(/opacity)]
+shadow-[container]：添加阴影，container 表示阴影最大宽度，取值如下 -->
+    <div class="shadow-lg">SdColor Red 500</div>
+    <div class="shadow-lg shadow-red-500">SdColor Red 500</div>
+    <div class="shadow-lg shadow-red-500/20">SdColor Red 500</div>
+
+    <!-- accent 强调颜色 -->
+    <input type="checkbox" checked />
+    <input type="checkbox" class="accent-red-500" checked />
+    <input type="checkbox" class="accent-green-500" checked />
+  </body>
+</html>
