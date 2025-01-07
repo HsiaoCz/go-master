@@ -17,6 +17,7 @@ require (
 	github.com/prometheus/client_golang v1.20.5
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/sirupsen/logrus v1.9.3
+	github.com/uptrace/bunrouter v1.0.22
 	go.mongodb.org/mongo-driver v1.17.1
 	golang.org/x/net v0.29.0
 	google.golang.org/grpc v1.68.0
