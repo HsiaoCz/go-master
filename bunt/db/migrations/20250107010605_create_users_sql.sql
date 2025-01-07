@@ -7,6 +7,10 @@ CREATE TABLE IF NOT EXISTS users (
     avatar_url text not null,
     background_url text not null,
     email text unique not null,
+    bio text not null,
+    created_at datetime not null,
+    updated_at datetime not null,
+    deleted_at datetime
 );
 -- +goose StatementBegin
 -- +goose StatementEnd

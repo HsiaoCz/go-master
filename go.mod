@@ -6,6 +6,7 @@ toolchain go1.22.9
 
 require (
 	github.com/anthdm/superkit v0.0.0-20240701091803-e7f8e0aad3e9
+	github.com/go-chi/chi/v5 v5.2.0
 	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang-jwt/jwt/v5 v5.2.1
@@ -18,8 +19,7 @@ require (
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/uptrace/bun v1.2.8
-	github.com/uptrace/bun/dialect/sqlitedialect v1.2.7
-	github.com/uptrace/bunrouter v1.0.22
+	github.com/uptrace/bun/dialect/sqlitedialect v1.2.8
 	go.mongodb.org/mongo-driver v1.17.1
 	golang.org/x/net v0.29.0
 	google.golang.org/grpc v1.68.0
