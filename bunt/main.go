@@ -9,26 +9,21 @@ import (
 	"time"
 
 	"github.com/HsiaoCz/go-master/bunt/db"
+	"github.com/HsiaoCz/go-master/bunt/logger"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/joho/godotenv"
-	"github.com/sirupsen/logrus"
 )
-
-func init() {
-	logrus.SetLevel(logrus.DebugLevel)
-	logrus.SetFormatter(&logrus.TextFormatter{FullTimestamp: true})
-}
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		logrus.Errorf("Error loading .env file: %v", err)
+		logger.L.Errorf("Error loading .env file: %v", err)
 		os.Exit(1)
 	}
 
 	// Init the database
 	if err := db.Init(); err != nil {
-		logrus.Errorf("Error initializing the database: %v", err)
+		logger.L.Errorf("Error initializing the database: %v", err)
 		os.Exit(1)
 	}
 
@@ -54,12 +49,12 @@ func main() {
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
-			logrus.Errorf("Error starting the server: %v", err)
+			logger.L.Errorf("Error starting the server: %v", err)
 			os.Exit(1)
 		}
 	}()
 
-	logrus.Infof("Server started on port %s", port)
+	logger.L.Infof("Server started on port %s", port)
 
 	// Graceful shutdown
 
@@ -71,10 +66,10 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	logrus.Info("Shutting down the server...")
+	logger.L.Info("Shutting down the server...")
 
 	if err := srv.Shutdown(ctx); err != nil {
-		logrus.Errorf("Error shutting down the server: %v", err)
+		logger.L.Errorf("Error shutting down the server: %v", err)
 		os.Exit(1)
 	}
 
