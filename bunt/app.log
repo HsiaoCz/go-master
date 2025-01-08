@@ -1,1 +1,15 @@
 {"level":"info","msg":"Server started on port :3001","time":"2025-01-08T21:43:29+08:00"}
+{"level":"info","msg":"Server started on port :3001","time":"2025-01-08T22:16:56+08:00"}
+{"level":"info","msg":"Shutting down the server...","time":"2025-01-08T22:16:58+08:00"}
+{"level":"error","msg":"Error starting the server: http: Server closed","time":"2025-01-08T22:16:58+08:00"}
+{"level":"info","msg":"Server started on port :3001","time":"2025-01-08T22:17:17+08:00"}
+{"level":"info","msg":"Shutting down the server...","time":"2025-01-08T22:20:02+08:00"}
+{"level":"error","msg":"Error starting the server: http: Server closed","time":"2025-01-08T22:20:02+08:00"}
+{"level":"info","msg":"Server started on port :3001","time":"2025-01-08T22:20:26+08:00"}
+{"level":"info","msg":"Server started on port :3001","time":"2025-01-08T22:24:23+08:00"}
+{"level":"info","msg":"Shutting down the server...","time":"2025-01-08T22:24:46+08:00"}
+{"level":"error","msg":"Error starting the server: http: Server closed","time":"2025-01-08T22:24:46+08:00"}
+{"level":"info","msg":"Server started on port :3001","time":"2025-01-08T22:25:01+08:00"}
+{"level":"info","msg":"Shutting down the server...","time":"2025-01-08T22:26:41+08:00"}
+{"level":"error","msg":"Error starting the server: http: Server closed","time":"2025-01-08T22:26:41+08:00"}
+{"level":"info","msg":"Server started on port :3001","time":"2025-01-08T22:26:49+08:00"}

@@ -9,8 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
     email text unique not null,
     bio text not null,
     created_at datetime not null,
-    updated_at datetime not null,
-    deleted_at datetime
+    updated_at datetime not null
 );
 -- +goose StatementBegin
 -- +goose StatementEnd

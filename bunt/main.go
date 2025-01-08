@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/HsiaoCz/go-master/bunt/db"
+	"github.com/HsiaoCz/go-master/bunt/handlers"
 	"github.com/HsiaoCz/go-master/bunt/logger"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -37,6 +38,9 @@ func main() {
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello, World!"))
 	})
+
+	r.Post("/user/signup", handlers.HandleUserSignup)
+	r.Post("/user/login", handlers.HandleUserLogin)
 
 	// Start the server
 
