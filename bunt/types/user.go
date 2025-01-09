@@ -25,6 +25,13 @@ type Users struct {
 	UpdatedAt     time.Time `json:"updated_at"`
 }
 
+type UserUpdate struct {
+	Username      string `json:"username"`
+	AvatarUrl     string `json:"avatar_url"`
+	BackgroundUrl string `json:"background_url"`
+	Bio           string `json:"bio"`
+}
+
 type UserSignup struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`

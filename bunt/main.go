@@ -41,7 +41,9 @@ func main() {
 
 	r.Post("/user/signup", handlers.HandleUserSignup)
 	r.Post("/user/login", handlers.HandleUserLogin)
-
+	r.Get("/user/{id}", handlers.HandleUserGet)
+	r.Put("/user/{id}", handlers.HandleUserUpdate)
+	r.Delete("/user/{id}", handlers.HandleUserDelete)
 	// Start the server
 
 	srv := &http.Server{
