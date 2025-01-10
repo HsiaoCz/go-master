@@ -17,3 +17,12 @@ type Posts struct {
 	CreatedAt time.Time `json:"created_at" `
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
+type CreatePost struct {
+	UserID   string `json:"user_id"`
+	Caption  string `json:"caption"`
+	Title    string `json:"title"`
+	Content  string `json:"content"`
+	ImageUrl string `json:"image_url,omitempty"`
+	VideoUrl string `json:"video_url,omitempty"`
+}

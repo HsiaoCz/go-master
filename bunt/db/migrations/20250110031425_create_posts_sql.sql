@@ -1,6 +1,6 @@
 -- +goose Up
 CREATE TABLE IF NOT EXISTS posts (
-    id integer primary key,
+    id integer primary key autoincrement,
     post_id text unique not null,
     user_id text not null,
     title text not null,

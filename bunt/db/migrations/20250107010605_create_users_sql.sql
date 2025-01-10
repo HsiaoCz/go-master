@@ -1,6 +1,6 @@
 -- +goose Up
 CREATE TABLE IF NOT EXISTS users (
-    id integer primary key,
+    id integer primary key autoincrement,
     username text not null,
     user_id text unique not null,
     password_hash text not null,

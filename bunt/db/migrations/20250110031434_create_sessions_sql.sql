@@ -1,6 +1,6 @@
 -- +goose Up
 CREATE TABLE IF NOT EXISTS sessions (
-    id integer primary key,
+    id integer primary key autoincrement,
     session_id text unique not null,
     user_id text not null,
     ip_address text not null,
