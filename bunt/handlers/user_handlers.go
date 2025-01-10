@@ -75,6 +75,30 @@ func HandleUserLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	session := &types.Sessions{
+		SessionID: uuid.New().String(),
+		UserID:    user.UserID,
+		IpAddress: r.RemoteAddr,
+		UserAgent: r.UserAgent(),
+		ExpiresAt: time.Now().Add(time.Hour * 24 * 30),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	_, err = db.Get().NewInsert().Model(session).Exec(r.Context())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	cookie := &http.Cookie{
+		Name:     "session_id",
+		Value:    session.SessionID,
+		Expires:  time.Now().Add(time.Hour * 24 * 30),
+		HttpOnly: true,
+	}
+	http.SetCookie(w, cookie)
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]any{"message": "User logged in successfully", "status": http.StatusOK})
@@ -128,7 +152,7 @@ func HandleUserDelete(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]any{"message": "User deleted successfully", "status": http.StatusOK})
