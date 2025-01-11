@@ -55,3 +55,30 @@ func HandleCreatePost(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]any{"message": "post created successfully", "status": http.StatusCreated})
 }
+
+func HandleGetPostByID(w http.ResponseWriter, r *http.Request) {
+	var post types.Posts
+	err := db.Get().NewSelect().Model(&post).Where("post_id = ?", r.URL.Query().Get("post_id")).Scan(r.Context())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]any{"message": "get post successfully", "status": http.StatusOK, "post": post})
+}
+
+func HandleDeletePostByID(w http.ResponseWriter, r *http.Request) {
+	var post types.Posts
+	_, err := db.Get().NewDelete().Model(&post).Where("post_id = ?", r.URL.Query().Get("post_id")).Exec(r.Context())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]any{"message": "delete post successfully", "status": http.StatusOK})
+}
+
+

@@ -44,6 +44,11 @@ func main() {
 	r.Get("/user/{id}", handlers.HandleUserGet)
 	r.Put("/user/{id}", handlers.HandleUserUpdate)
 	r.Delete("/user/{id}", handlers.HandleUserDelete)
+
+	// post router
+	r.Post("/post/create", handlers.HandleCreatePost)
+	r.Get("/post/{post_id}", handlers.HandleGetPostByID)
+	r.Delete("/post/{post_id}", handlers.HandleDeletePostByID)
 	// Start the server
 
 	srv := &http.Server{
