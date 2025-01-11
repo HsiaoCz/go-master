@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/HsiaoCz/go-master/stock/db"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,6 +19,10 @@ import (
 
 func main() {
 	if err := godotenv.Load(); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := db.Init(); err != nil {
 		log.Fatal(err)
 	}
 
@@ -40,7 +45,7 @@ func main() {
 		port   = os.Getenv("PORT")
 		router = http.NewServeMux()
 	)
-	
+
 	server := http.Server{
 		Addr:         port,
 		Handler:      router,
