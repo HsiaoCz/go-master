@@ -5,6 +5,7 @@ go 1.23
 toolchain go1.23.4
 
 require (
+	github.com/a-h/templ v0.3.819
 	github.com/anthdm/superkit v0.0.0-20240701091803-e7f8e0aad3e9
 	github.com/go-chi/chi/v5 v5.2.0
 	github.com/gofiber/fiber/v2 v2.52.5
@@ -32,7 +33,6 @@ require (
 )
 
 require (
-	github.com/a-h/templ v0.3.819 // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
