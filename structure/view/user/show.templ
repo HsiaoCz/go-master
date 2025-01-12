@@ -1,0 +1,8 @@
+package user
+
+import "github.com/HsiaoCz/go-master/structure/model"
+
+templ Show(user model.User) {
+	<h1>Hello { user.Username } from the user Page</h1>
+	<h1>this is your email { user.Email }</h1>
+}
