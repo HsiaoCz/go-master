@@ -11,5 +11,6 @@ CREATE TABLE IF NOT EXISTS message_status(
 -- +goose StatementBegin
 -- +goose StatementEnd
 -- +goose Down
+DROP TABLE IF EXISTS message_status;
 -- +goose StatementBegin
 -- +goose StatementEnd
