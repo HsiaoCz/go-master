@@ -4,6 +4,8 @@ import (
 	"errors"
 	"regexp"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 var (
@@ -62,4 +64,23 @@ func isValidEmail(email string) bool {
 	pattern := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
 	regex := regexp.MustCompile(pattern)
 	return regex.MatchString(email)
+}
+
+func (u *Users) HashPassword() error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	u.Password = string(hashedPassword)
+	return nil
+}
+
+func (u *Users) CheckPassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+	return err == nil
+}
+
+type UserLogin struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
