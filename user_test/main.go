@@ -28,6 +28,12 @@ func main() {
 		os.Exit(1)
 	}
 
+	// init redis
+	if err := db.InitRedis(); err != nil {
+		logger.L.Errorf("Error initializing the redis: %v", err)
+		os.Exit(1)
+	}
+
 	var (
 		r    = chi.NewRouter()
 		port = os.Getenv("PORT")

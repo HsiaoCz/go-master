@@ -2,11 +2,14 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
-	"github.com/HsiaoCz/go-master/bunt/db"
+	"github.com/HsiaoCz/go-master/user_test/db"
 	"github.com/HsiaoCz/go-master/user_test/types"
+	"github.com/google/uuid"
 )
 
 func UserRegister(w http.ResponseWriter, r *http.Request) {
@@ -57,11 +60,28 @@ func UserLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	key := fmt.Sprintf("%s:login_count", user_login.Email)
+	result := db.RDB.Get(r.Context(), key)
+	count, err := strconv.Atoi(result.Val())
+	if err != nil {
+		count = 0
+	}
+
+	if count >= 5 {
+		http.Error(w, "too many login attempts", http.StatusTooManyRequests)
+		return
+	}
+
 	// Check if the user exists
 	// ...
 	var user types.Users
-	err := db.Get().NewSelect().Model(&user).Where("email = ?", user_login.Email).Scan(r.Context())
+	err = db.Get().NewSelect().Model(&user).Where("email = ?", user_login.Email).Scan(r.Context())
 	if err != nil {
+		status := db.RDB.Set(r.Context(), key, count+1, time.Minute*5)
+		if status.Err() != nil {
+			http.Error(w, status.Err().Error(), http.StatusInternalServerError)
+			return
+		}
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
@@ -73,5 +93,35 @@ func UserLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	// ...
 	// Generate a session
-	
+
+	session := &types.Sessions{
+		UserID:    user.UserID,
+		SessionID: uuid.New().String(),
+		IpAddress: r.RemoteAddr,
+		UserAgent: r.UserAgent(),
+		ExpiresAt: time.Now().Add(time.Hour * 24 * 30),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	_, err = db.Get().NewInsert().Model(session).Exec(r.Context())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Return the session
+	// ...
+	cookie := &http.Cookie{
+		Name:     "session_id",
+		Value:    session.SessionID,
+		Expires:  session.ExpiresAt,
+		HttpOnly: true,
+	}
+
+	http.SetCookie(w, cookie)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{"message": "User logged in successfully", "status": http.StatusOK})
 }
